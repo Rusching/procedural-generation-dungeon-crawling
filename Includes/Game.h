@@ -24,6 +24,8 @@
 
 static float const FPS = 60.0;						// Constant for fixed time - step loop. We'll lock it at 60fps.
 static float const MS_PER_STEP = 1.0f / FPS;		// Roughly (0.017) @ 60fps.
+static int const MAX_ITEM_SPAWN_COUNT = 50;			// Maximum items to be spawned.
+static int const MAX_ENEMY_SPAWN_COUNT = 20;		// Maximum enemies to be spawned.
 
 class Game
 {
@@ -64,6 +66,20 @@ public:
 	 */
 	void Draw(float timeDelta);
 
+	/*
+	* Spawns a given item in the level.
+	*/
+	void SpawnItem(ITEM itemType, sf::Vector2f position = { -1.f, -1.f });
+
+	/*
+	* Spawns a given enemy in the level.
+	*/
+	void SpawnEnemy(ENEMY enemyType, sf::Vector2f position = { -1.f, -1.f });
+
+	/*
+	* Spawns a given number of a certain tile at random locations in the level.
+	*/
+	void SpawnRandomTiles(TILE tileType, int count);
 private:
 
 	/**

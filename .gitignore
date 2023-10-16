@@ -234,3 +234,10 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+# Books
+Procedural Content Generation for C++ Game Development (Dale Green).epub
+Procedural Content Generation in Games (Noor Shaker, Julian Togelius etc.) (Z-Library).pdf
+
+# SFML package
+SFML-2.6.0-windows-gcc-13.1.0-mingw-32-bit.zip

@@ -37,7 +37,21 @@ void Game::Initialize()
 	m_screenSize = m_window.getSize();
 
 	// Load the correct projectile texture.
-	m_projectileTextureID = TextureManager::AddTexture("../../resources/projectiles/spr_sword.png");
+	switch (m_player.GetClass()) {
+	case PLAYER_CLASS::WARRIOR:
+		m_projectileTextureID = TextureManager::AddTexture("../../resources/projectiles/spr_sword.png");
+		break;
+	case PLAYER_CLASS::MAGE:
+		m_projectileTextureID = TextureManager::AddTexture("../../resources/projectiles/spr_magic_ball.png");
+		break;
+	case PLAYER_CLASS::ARCHER:
+		m_projectileTextureID = TextureManager::AddTexture("../../resources/projectiles/spr_arrow.png");
+		break;
+	case PLAYER_CLASS::THIEF:
+		m_projectileTextureID = TextureManager::AddTexture("../../resources/projectiles/spr_dagger.png");
+		break;
+	}
+
 
 	// Initialize the UI.
 	LoadUI();
@@ -53,11 +67,17 @@ void Game::Initialize()
 	// Load the level.
 	m_level.LoadLevelFromFile("../../resources/data/level_data.txt");
 
+	// Add the new tile type to level.
+	m_level.AddTile("../../resources/tiles/spr_tile_floor_alt.png", TILE::FLOOR_ALT);
+
 	// Set the position of the player.
 	m_player.SetPosition(sf::Vector2f(m_screenCenter.x + 197.f, m_screenCenter.y + 410.f));
 
 	// Populate level.
 	PopulateLevel();
+
+	// Change a selection of random tiles to the crarcked tile sprite.
+	SpawnRandomTiles(TILE::FLOOR_ALT, 15);
 }
 
 // Constructs the grid of sprites that are used to draw the game light system.
@@ -214,27 +234,21 @@ void Game::LoadUI()
 // Populate the level with items.
 void Game::PopulateLevel()
 {
-	// A Boolean variable used to determine if an object should be spawned.bool canSpawn;
-	bool canSpawn;
-
-	canSpawn = std::rand() % 2;
-	if (canSpawn) {
-		int itemIndex = std::rand() % 2;
-		std::unique_ptr<Item> item;
-		switch (itemIndex) {
-		case 0:
-			item = std::make_unique<Gold>();
-			break;
-		case 1:
-			item = std::make_unique<Gem>();
+	
+	for (int i = 0; i < MAX_ITEM_SPAWN_COUNT; i++) {
+		if (std::rand() % 2) {
+			SpawnItem(static_cast<ITEM>(std::rand() % 5));
 		}
-
-		// set the item position.
-		item->SetPosition(sf::Vector2f(m_screenCenter.x + 50.f, m_screenCenter.y));
-		
-		// add the item to our collection of all objects.
-		m_items.push_back(std::move(item));
 	}
+
+	
+	for (int i = 0; i < MAX_ENEMY_SPAWN_COUNT; i++) {
+		if (std::rand() % 2) {
+			SpawnEnemy(static_cast<ENEMY>(std::rand() % static_cast<int>(ENEMY::COUNT)));
+		}
+	}
+	
+	
 }
 
 // Returns the running state of the game.
@@ -781,4 +795,75 @@ void Game::Draw(float timeDelta)
 
 	// Present the back-buffer to the screen.
 	m_window.display();
+}
+
+// Spawns a given object type at a random location within the map.
+// Has the option to explicitly set a spawn location.
+void Game::SpawnItem(ITEM itemType, sf::Vector2f position) {
+	std::unique_ptr<Item> item;
+	int objectInedx = 0;
+
+	sf::Vector2f spawnLocation;
+	if ((position.x >= 0.f) && (position.y >= 0.f)) {
+		spawnLocation = position;
+	}
+	else {
+		spawnLocation = m_level.GetRandomSpawnLocation();
+	}
+	switch (itemType) {
+	case ITEM::POTION:
+		item = std::make_unique<Potion>();
+		break;
+	case ITEM::GEM:
+		item = std::make_unique<Gem>();
+		break;
+	case ITEM::GOLD:
+		item = std::make_unique<Gold>();
+		break;
+	case ITEM::HEART:
+		item = std::make_unique<Heart>();
+		break;
+	case ITEM::KEY:
+		item = std::make_unique<Key>();
+		break;
+	}
+	item->SetPosition(spawnLocation);
+	m_items.push_back(std::move(item));
+}
+
+// Spawn an enemy.
+void Game::SpawnEnemy(ENEMY enemyType, sf::Vector2f position) {
+	sf::Vector2f spawnLocation;
+
+	if ((position.x >= 0.f) && (position.y >= 0.f)) {
+		spawnLocation = position;
+	}
+	else {
+		spawnLocation = m_level.GetRandomSpawnLocation();
+	}
+	std::unique_ptr<Enemy> enemy;
+	switch (enemyType) {
+	case ENEMY::SLIME:
+		enemy = std::make_unique<Slime>();
+		break;
+	case ENEMY::HUMANOID:
+		enemy = std::make_unique<Humanoid>();
+		break;
+	}
+	enemy->SetPosition(spawnLocation);
+	m_enemies.push_back(std::move(enemy));
+}
+
+// Change a selection of random tiles to the cracked tile sprite.
+void Game::SpawnRandomTiles(TILE tileType, int count) {
+	int tileIndex(0);
+	for (int i = 0; i < count; i++) {
+		int rowIndex(0), columnIndex(0);
+		while (!m_level.IsFloor(columnIndex, rowIndex)) {
+			columnIndex = std::rand() % GRID_WIDTH;
+			rowIndex = std::rand() % GRID_HEIGHT;
+		}
+		m_level.SetTile(columnIndex, rowIndex, tileType);
+	}
+
 }

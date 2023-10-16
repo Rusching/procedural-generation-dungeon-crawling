@@ -80,6 +80,10 @@ public:
 	 */
 	void Damage(int damage);
 
+	/*
+	* Return the player's class.
+	*/
+	PLAYER_CLASS Player::GetClass() const;
 private:
 
 	/**
@@ -121,5 +125,10 @@ private:
 	 * Can the player take damage.
 	 */
 	bool m_canTakeDamage;
+
+	/*
+	* The player's class.
+	*/
+	PLAYER_CLASS m_class;
 };
 #endif

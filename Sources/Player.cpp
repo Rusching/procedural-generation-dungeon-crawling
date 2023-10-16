@@ -9,15 +9,37 @@ m_manaDelta(0.f),
 m_isAttacking(false),
 m_canTakeDamage(true)
 {
+	// Generate a random class.
+	m_class = static_cast<PLAYER_CLASS>(std::rand() % static_cast<int>(PLAYER_CLASS::COUNT));
+
+
+	std::string playerClassName;
+
+	// Set class-specific variables.
+	switch (m_class) {
+	case PLAYER_CLASS::WARRIOR:
+		playerClassName = "warrior";
+		break;
+	case PLAYER_CLASS::MAGE:
+		playerClassName = "mage";
+		break;
+	case PLAYER_CLASS::ARCHER:
+		playerClassName = "archer";
+		break;
+	case PLAYER_CLASS::THIEF:
+		playerClassName = "thief";
+		break;
+	}
+
 	// Load textures.
-	m_textureIDs[static_cast<int>(ANIMATION_STATE::WALK_UP)] = TextureManager::AddTexture("../../resources/players/warrior/spr_warrior_walk_up.png");
-	m_textureIDs[static_cast<int>(ANIMATION_STATE::WALK_DOWN)] = TextureManager::AddTexture("../../resources/players/warrior/spr_warrior_walk_down.png");
-	m_textureIDs[static_cast<int>(ANIMATION_STATE::WALK_RIGHT)] = TextureManager::AddTexture("../../resources/players/warrior/spr_warrior_walk_right.png");
-	m_textureIDs[static_cast<int>(ANIMATION_STATE::WALK_LEFT)] = TextureManager::AddTexture("../../resources/players/warrior/spr_warrior_walk_left.png");
-	m_textureIDs[static_cast<int>(ANIMATION_STATE::IDLE_UP)] = TextureManager::AddTexture("../../resources/players/warrior/spr_warrior_idle_up.png");
-	m_textureIDs[static_cast<int>(ANIMATION_STATE::IDLE_DOWN)] = TextureManager::AddTexture("../../resources/players/warrior/spr_warrior_idle_down.png");
-	m_textureIDs[static_cast<int>(ANIMATION_STATE::IDLE_RIGHT)] = TextureManager::AddTexture("../../resources/players/warrior/spr_warrior_idle_right.png");
-	m_textureIDs[static_cast<int>(ANIMATION_STATE::IDLE_LEFT)] = TextureManager::AddTexture("../../resources/players/warrior/spr_warrior_idle_left.png");
+	m_textureIDs[static_cast<int>(ANIMATION_STATE::WALK_UP)] = TextureManager::AddTexture("../../resources/players/" + playerClassName + "/spr_" + playerClassName + "_walk_up.png");
+	m_textureIDs[static_cast<int>(ANIMATION_STATE::WALK_DOWN)] = TextureManager::AddTexture("../../resources/players/" + playerClassName + "/spr_" + playerClassName + "_walk_down.png");
+	m_textureIDs[static_cast<int>(ANIMATION_STATE::WALK_RIGHT)] = TextureManager::AddTexture("../../resources/players/" + playerClassName + "/spr_" + playerClassName + "_walk_right.png");
+	m_textureIDs[static_cast<int>(ANIMATION_STATE::WALK_LEFT)] = TextureManager::AddTexture("../../resources/players/" + playerClassName + "/spr_" + playerClassName + "_walk_left.png");
+	m_textureIDs[static_cast<int>(ANIMATION_STATE::IDLE_UP)] = TextureManager::AddTexture("../../resources/players/" + playerClassName + "/spr_" + playerClassName + "_idle_up.png");
+	m_textureIDs[static_cast<int>(ANIMATION_STATE::IDLE_DOWN)] = TextureManager::AddTexture("../../resources/players/" + playerClassName + "/spr_" + playerClassName + "_idle_down.png");
+	m_textureIDs[static_cast<int>(ANIMATION_STATE::IDLE_RIGHT)] = TextureManager::AddTexture("../../resources/players/" + playerClassName + "/spr_" + playerClassName + "_idle_right.png");
+	m_textureIDs[static_cast<int>(ANIMATION_STATE::IDLE_LEFT)] = TextureManager::AddTexture("../../resources/players/" + playerClassName + "/spr_" + playerClassName + "_idle_left.png");
 
 	// Set initial sprite.
 	SetSprite(TextureManager::GetTexture(m_textureIDs[static_cast<int>(ANIMATION_STATE::WALK_UP)]), false, 8, 12);
@@ -291,4 +313,9 @@ void Player::SetHealth(int healthValue)
 	{
 		m_health = m_maxHealth;
 	}
+}
+
+// Return the player's class.
+PLAYER_CLASS Player::GetClass() const {
+	return m_class;
 }

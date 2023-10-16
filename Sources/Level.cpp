@@ -320,3 +320,27 @@ void Level::Draw(sf::RenderWindow& window, float timeDelta)
 		torch->Draw(window, timeDelta);
 	}
 }
+
+// Get the absolute position of a tile on the screen.
+sf::Vector2f Level::GetActualTileLocation(int columnIndex, int rowIndex) {
+	sf::Vector2f location;
+	location.x = m_origin.x + (columnIndex * TILE_SIZE) + (TILE_SIZE / 2);
+	location.y = m_origin.y + (rowIndex * TILE_SIZE) + (TILE_SIZE / 2);
+	return location;
+}
+
+// Get a random valid spawn location from currently loaded level.
+sf::Vector2f Level::GetRandomSpawnLocation() {
+	int rowIndex(0), columnIndex(0);
+	while (!Level::IsFloor(columnIndex, rowIndex)) {
+		columnIndex = std::rand() % GRID_WIDTH;
+		rowIndex = std::rand() % GRID_HEIGHT;
+	}
+
+	sf::Vector2f tileLocation(Level::GetActualTileLocation(columnIndex, rowIndex));
+	
+	tileLocation.x += std::rand() % 21 - 10;
+	tileLocation.y += std::rand() % 21 - 10;
+	
+	return tileLocation;
+}

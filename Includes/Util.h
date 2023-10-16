@@ -35,6 +35,15 @@ enum class ENEMY {
 	COUNT
 };
 
+// Player classes.
+enum class PLAYER_CLASS {
+	WARRIOR,
+	MAGE,
+	ARCHER,
+	THIEF,
+	COUNT
+};
+
 // Animation states.
 enum class ANIMATION_STATE {
 	WALK_UP,

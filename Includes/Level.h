@@ -180,6 +180,15 @@ public:
 	*/
 	int AddTile(std::string fileName, TILE tileType);
 
+	/*
+	* Returns the position of a tile on the screen.
+	*/
+	sf::Vector2f GetActualTileLocation(int columnIndex, int rowIndex);
+
+	/*
+	* Returns a valid spawn location from the currently loaded level
+	*/
+	sf::Vector2f GetRandomSpawnLocation();
 private:
 
 	/**
